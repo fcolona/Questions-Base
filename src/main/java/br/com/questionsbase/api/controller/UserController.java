@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/user")
 public class UserController {
     
-    public String HelloWorld(){
-        return "Hello World";
+    public String root(){
+        return "The url to login is: /login";
     }
 }
