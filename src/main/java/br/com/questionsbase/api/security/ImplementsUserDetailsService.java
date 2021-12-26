@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
+import br.com.questionsbase.domain.model.User.Provider;
 import br.com.questionsbase.domain.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
@@ -15,7 +16,7 @@ public class ImplementsUserDetailsService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email).orElseThrow( () -> new UsernameNotFoundException("User Not Found"));
+        return userRepository.checkIfUserExists(email, Provider.LOCAL).orElseThrow( () -> new UsernameNotFoundException("User Not Found"));
     }
     
 }

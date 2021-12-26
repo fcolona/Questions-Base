@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     public Optional<User> findByEmail(String email);
 
     @Query(
-        value = "SELECT u.email FROM User u WHERE u.email=:email AND u.provider=:provider"
+        value = "SELECT u FROM User u WHERE u.email=:email AND u.provider=:provider"
     )
     public Optional<User> checkIfUserExists(String email, Provider provider);
 }
