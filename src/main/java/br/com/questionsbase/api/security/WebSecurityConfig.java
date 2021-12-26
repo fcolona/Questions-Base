@@ -7,13 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -36,8 +39,9 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
             .antMatchers("/", "/login", "/oauth/**").permitAll()
-            .antMatchers("/api/v1/user").hasRole("ADMIN")
-            //.anyRequest().authenticated()
+            .antMatchers(HttpMethod.GET, "/api/v1/user").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
+            .anyRequest().authenticated()
             .and()
             .formLogin().permitAll()
             .and()
@@ -55,14 +59,20 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter{
                     DefaultOidcUser oauthUser = (DefaultOidcUser) authentication.getPrincipal();
                     String email = oauthUser.getAttribute("email");
                     userService.processOAuthPostLogin(email);
-                    response.sendRedirect("/logged");
+                    response.setStatus(200);
                 }
             });
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
-            .passwordEncoder(new BCryptPasswordEncoder());
+            .passwordEncoder(passwordEncoder());
     }
+
 }
