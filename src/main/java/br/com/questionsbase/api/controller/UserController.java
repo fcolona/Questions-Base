@@ -2,12 +2,15 @@ package br.com.questionsbase.api.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.questionsbase.api.exception.UserAlreadyExistsException;
 import br.com.questionsbase.api.model.UserInput;
 import br.com.questionsbase.api.model.UserResponse;
 import br.com.questionsbase.domain.model.User;
@@ -28,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public UserResponse createUser(@RequestBody UserInput userInput) throws Exception{
+    public UserResponse createUser(@RequestBody @Valid UserInput userInput) throws UserAlreadyExistsException{
         return userService.save(userInput);
     }
 }
