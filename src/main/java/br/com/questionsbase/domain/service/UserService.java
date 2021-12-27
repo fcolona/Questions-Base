@@ -19,6 +19,7 @@ import br.com.questionsbase.domain.model.User;
 import br.com.questionsbase.domain.model.User.Provider;
 import br.com.questionsbase.domain.repository.RoleRepository;
 import br.com.questionsbase.domain.repository.UserRepository;
+import br.com.questionsbase.api.model.dto.UserIdAndEmail;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -33,7 +34,8 @@ public class UserService {
     public UserResponse save(UserInput userInput) throws UserAlreadyExistsException{;
         User user = userAssembler.toEntity(userInput);
 
-        Optional<User> userOptional = userRepository.checkIfUserExists(user.getEmail(), Provider.LOCAL);
+        Optional<UserIdAndEmail> userOptional = userRepository.checkIfUserExists(user.getEmail(), Provider.LOCAL);
+
         userOptional.ifPresent( userFound -> {
             Set<Field> fields = new HashSet<>();
             fields.add(new Field("email", "User already exists"));
@@ -61,7 +63,7 @@ public class UserService {
     public void processOAuthPostLogin(String email) {
 
         //If the email doesn't exist, it'll be saved
-        userRepository.checkIfUserExists(email, Provider.GOOGLE).orElseGet( () -> {
+        userRepository.checkIfUserExistsAndRetrieveUser(email, Provider.GOOGLE).orElseGet( () -> {
             User newUser = new User();
             newUser.setEmail(email);
             newUser.setPassword(null);
