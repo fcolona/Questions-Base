@@ -3,20 +3,24 @@ package br.com.questionsbase.api.controller;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.http.HttpStatus;
 
 import br.com.questionsbase.api.assembler.QuestionAssembler;
 import br.com.questionsbase.api.model.QuestionInput;
 import br.com.questionsbase.api.model.QuestionResponse;
 import br.com.questionsbase.domain.model.Question;
+import br.com.questionsbase.domain.repository.AlternativeRepository;
 import br.com.questionsbase.domain.repository.QuestionRepository;
 import br.com.questionsbase.domain.service.QuestionService;
 import lombok.AllArgsConstructor;
@@ -65,7 +69,7 @@ public class QuestionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public QuestionResponse createQuestion(@RequestBody QuestionInput questionInput) throws HttpStatusCodeException{
+    public QuestionResponse createQuestion(@RequestBody @Valid QuestionInput questionInput) throws HttpStatusCodeException{
         return questionService.save(questionInput);
     }
 }
