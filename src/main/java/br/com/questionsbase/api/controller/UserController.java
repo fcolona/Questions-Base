@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
 
-import br.com.questionsbase.api.exception.UserAlreadyExistsException;
+
+import br.com.questionsbase.api.exception.ResourceAlreadyExistsException;
 import br.com.questionsbase.api.model.UserInput;
 import br.com.questionsbase.api.model.UserResponse;
 import br.com.questionsbase.domain.model.User;
@@ -31,7 +34,8 @@ public class UserController {
     }
 
     @PostMapping()
-    public UserResponse createUser(@RequestBody @Valid UserInput userInput) throws UserAlreadyExistsException{
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponse createUser(@RequestBody @Valid UserInput userInput) throws ResourceAlreadyExistsException{
         return userService.save(userInput);
     }
 }

@@ -47,8 +47,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
         return handleExceptionInternal(ex, errorDetails, headers, status, request);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-	public ResponseEntity<?> userAlreadyExistsHandler(UserAlreadyExistsException exception, WebRequest request){
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+	public ResponseEntity<?> resourceAlreadyExistsHandler(ResourceAlreadyExistsException exception, WebRequest request){
         Set<ErrorDetails.Field> fields = exception.getFields();
         ErrorDetails errorDetails = new ErrorDetails();
         errorDetails.setStatus(400);

@@ -40,7 +40,9 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter{
         http.csrf().disable().authorizeRequests()
             .antMatchers("/", "/login", "/oauth/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/v1/user").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, "/api/v1/question").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/question/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin().permitAll()
@@ -60,6 +62,7 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter{
                     String email = oauthUser.getAttribute("email");
                     userService.processOAuthPostLogin(email);
                     response.setStatus(200);
+                    response.sendRedirect("/");
                 }
             });
     }

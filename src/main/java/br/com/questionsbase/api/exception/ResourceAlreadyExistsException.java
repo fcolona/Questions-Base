@@ -10,11 +10,11 @@ import lombok.Getter;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
-public class UserAlreadyExistsException extends RuntimeException{
+public class ResourceAlreadyExistsException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
 	private Set<Field> fields;
     
-    public UserAlreadyExistsException(Set<Field> fields) {
+    public ResourceAlreadyExistsException(Set<Field> fields) {
 		super(fields.toString());
 		this.fields = fields;
 	}

@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.questionsbase.api.assembler.UserAssembler;
-import br.com.questionsbase.api.exception.UserAlreadyExistsException;
+import br.com.questionsbase.api.exception.ResourceAlreadyExistsException;
 import br.com.questionsbase.api.exception.ErrorDetails.Field;
 import br.com.questionsbase.api.model.UserInput;
 import br.com.questionsbase.api.model.UserResponse;
@@ -31,7 +31,7 @@ public class UserService {
     private UserAssembler userAssembler;
 
     @Transactional
-    public UserResponse save(UserInput userInput) throws UserAlreadyExistsException{;
+    public UserResponse save(UserInput userInput) throws ResourceAlreadyExistsException{;
         User user = userAssembler.toEntity(userInput);
 
         Optional<UserIdAndEmail> userOptional = userRepository.checkIfUserExists(user.getEmail(), Provider.LOCAL);
@@ -39,7 +39,7 @@ public class UserService {
         userOptional.ifPresent( userFound -> {
             Set<Field> fields = new HashSet<>();
             fields.add(new Field("email", "User already exists"));
-            throw new UserAlreadyExistsException(fields);
+            throw new ResourceAlreadyExistsException(fields);
         });
 
         user.setProvider(Provider.LOCAL);
