@@ -1,5 +1,6 @@
 package br.com.questionsbase.api.assembler;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,15 @@ public class QuestionAssembler {
         Set<QuestionResponse> res = questions.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toSet());
+
+        return res;
+    }
+
+    public List<QuestionResponse> toListResponse(List<Question> questions){
+
+        List<QuestionResponse> res = questions.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
 
         return res;
     }

@@ -1,7 +1,9 @@
 package br.com.questionsbase.domain.service;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import br.com.questionsbase.api.assembler.QuestionAssembler;
+import br.com.questionsbase.api.exception.ResourceNotFoundException;
+import br.com.questionsbase.api.exception.ErrorDetails.Field;
 import br.com.questionsbase.api.model.QuestionInput;
 import br.com.questionsbase.api.model.QuestionResponse;
 import br.com.questionsbase.api.model.dto.QuestionIdAndSlug;
@@ -55,5 +59,39 @@ public class QuestionService {
         }
 
         return slug;
+    }
+
+    @Transactional
+    public QuestionResponse update(int questionId, QuestionInput questionInput){
+        Question existingQuestion = questionRepository.findById(questionId).orElseThrow( () -> {
+            Set<Field> fields = new HashSet<>();
+            fields.add(new Field("questionId", "Id given do not match"));
+            throw new ResourceNotFoundException(fields);
+        });
+        Question question = questionAssembler.toEntity(questionInput);
+
+        //If the stem changed, there will need to regenerate the slug
+        if(!question.getStem().equals(existingQuestion.getStem())){
+            existingQuestion.setSlug(this.generateSlug(question.getStem(), 0));
+        }
+        existingQuestion.setExam(question.getExam());
+        existingQuestion.setYear(question.getYear());
+        existingQuestion.setSubject(question.getSubject());
+        existingQuestion.setStem(question.getStem());
+        
+        questionRepository.deleteAlternatives(questionId);
+
+        existingQuestion.getAlternatives().clear();
+        existingQuestion.setAlternatives(question.getAlternatives());
+
+        existingQuestion.getAlternatives().forEach( alternative -> {
+            alternative.setQuestion(existingQuestion);
+        });
+
+        
+        Question questionSaved = questionRepository.save(existingQuestion);
+
+        return questionAssembler.toResponse(questionSaved);
+        
     }
 }

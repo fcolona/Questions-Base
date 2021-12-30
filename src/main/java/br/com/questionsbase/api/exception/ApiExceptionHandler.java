@@ -59,4 +59,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException exception, WebRequest request){
+        Set<ErrorDetails.Field> fields = exception.getFields();
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setStatus(404);
+        errorDetails.setDateTime(OffsetDateTime.now());
+        errorDetails.setTitle("There are one or more invalid fields. Please fill it in the correct way and try again.");
+        errorDetails.setFields(fields);
+
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+
 }

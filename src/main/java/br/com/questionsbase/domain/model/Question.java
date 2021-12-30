@@ -31,6 +31,6 @@ public class Question {
     private String slug;
     private String stem;
 
-    @OneToMany(mappedBy = "question",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "question",cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private Set<Alternative> alternatives;
 }

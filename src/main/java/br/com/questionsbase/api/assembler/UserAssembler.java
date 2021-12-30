@@ -1,5 +1,8 @@
 package br.com.questionsbase.api.assembler;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +22,15 @@ public class UserAssembler {
 
     public UserResponse toResponse(User user){      
         UserResponse res = modelMapper.map(user, UserResponse.class);
+
+        return res;
+    }
+
+    public List<UserResponse> toCollectionResponse(List<User> users){
+
+        List<UserResponse> res = users.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
 
         return res;
     }

@@ -5,8 +5,6 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
-import br.com.questionsbase.api.model.AlternativeResponse;
-
 @Getter
 @Setter
 public class QuestionResponse {
