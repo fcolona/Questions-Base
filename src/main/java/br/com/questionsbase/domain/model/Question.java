@@ -1,5 +1,6 @@
 package br.com.questionsbase.domain.model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -33,4 +34,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question",cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private Set<Alternative> alternatives;
+
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Image> images;
 }

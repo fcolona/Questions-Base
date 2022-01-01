@@ -1,5 +1,6 @@
 package br.com.questionsbase.api.model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -30,4 +31,7 @@ public class QuestionInput {
 
     @Valid
     private Set<AlternativeInput> alternatives;
+
+    private List<ImageInput> images;
+
 }

@@ -60,4 +60,12 @@ public interface QuestionRepository extends JpaRepository<Question,Integer> {
         nativeQuery = true
     )
     public void deleteAlternatives(int questionId);
+
+    @Transactional
+    @Modifying
+    @Query(
+        value = "DELETE FROM image WHERE question_id = ?1",
+        nativeQuery = true
+    )
+    public void deleteImages(int questionId);
 }

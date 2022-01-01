@@ -49,6 +49,7 @@ public class QuestionController {
     @DeleteMapping("/{questionId}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable int questionId){
         questionRepository.deleteAlternatives(questionId);
+        questionRepository.deleteImages(questionId);
         questionRepository.deleteById(questionId);
 
         return ResponseEntity.noContent().build();

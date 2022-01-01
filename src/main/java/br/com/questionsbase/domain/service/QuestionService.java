@@ -33,6 +33,9 @@ public class QuestionService {
         question.getAlternatives().forEach( alternative -> {
             alternative.setQuestion(question);
         });
+        question.getImages().forEach( image -> {
+            image.setQuestion(question);
+        });
 
         String slug = this.generateSlug(question.getStem(), 0);
         question.setSlug(slug);
@@ -87,6 +90,18 @@ public class QuestionService {
         existingQuestion.getAlternatives().forEach( alternative -> {
             alternative.setQuestion(existingQuestion);
         });
+
+        questionRepository.deleteImages(questionId);
+
+        existingQuestion.getImages().clear();
+        existingQuestion.setImages(question.getImages());
+
+        
+        if(existingQuestion.getImages() != null){
+            existingQuestion.getImages().forEach( image -> {
+                image.setQuestion(existingQuestion);
+            });
+        }
 
         
         Question questionSaved = questionRepository.save(existingQuestion);
