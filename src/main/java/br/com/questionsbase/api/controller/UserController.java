@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.questionsbase.api.assembler.UserAssembler;
+import br.com.questionsbase.api.common.ApiRoleAccessNotes;
 import br.com.questionsbase.api.exception.ErrorDetails.Field;
 import br.com.questionsbase.api.exception.ResourceAlreadyExistsException;
 import br.com.questionsbase.api.exception.ResourceNotFoundException;
@@ -36,6 +38,7 @@ import br.com.questionsbase.domain.model.User.Provider;
 import br.com.questionsbase.domain.repository.UserRepository;
 import br.com.questionsbase.domain.service.EmailService;
 import br.com.questionsbase.domain.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -49,6 +52,8 @@ public class UserController {
     private EmailService emailService;
 
     @GetMapping
+    @ApiOperation(value = "Returns a list of users")
+    @ApiRoleAccessNotes("ROLE_ADMIN")
     public List<UserResponse> getAllUsers() {
         List<User> users = userRepository.findAll();
 
@@ -56,6 +61,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
+    @ApiOperation(value = "Returns a user, filtering by id")
+    @ApiRoleAccessNotes("ROLE_ADMIN")
     public UserResponse getOneUser(@PathVariable int userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             Set<Field> fields = new HashSet<>();
@@ -68,11 +75,14 @@ public class UserController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Creates a user")
     public UserResponse createUser(@RequestBody @Valid UserInput userInput) throws ResourceAlreadyExistsException {
         return userService.save(userInput);
     }
 
     @DeleteMapping("/{userId}")
+    @ApiOperation(value = "Deletes a user")
+    @ApiRoleAccessNotes("ROLE_ADMIN")
     public ResponseEntity<Void> deleteUser(@PathVariable int userId) {
         userRepository.deleteFromLinkTable(userId);
         userRepository.deleteById(userId);
@@ -81,6 +91,7 @@ public class UserController {
     }
 
     @PostMapping("/resetPassword")
+    @ApiOperation(value = "Creates a token for password reset and send it through email")
     public void resetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
         User user = userRepository.checkIfUserExistsAndRetrieveUser(userEmail, Provider.LOCAL).orElseThrow(() -> {
             Set<Field> fields = new HashSet<>();
@@ -90,16 +101,13 @@ public class UserController {
 
         PasswordResetToken tokenSaved = userService.createPasswordResetTokenForUser(user);
 
-        String url = request.getRequestURL().toString();
-
-        int index = url.lastIndexOf('/');
-        url = url.substring(0, index);
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 
         mailSender.send(emailService.constructResetTokenEmail(url, request.getLocale(), tokenSaved.getToken(), user));
     }
     @Controller
     public class PageRenderer {
-        @GetMapping("/api/v1/user/changePassword")
+        @GetMapping("user/changePassword")
         public String displayResetPasswordPage(Model model, @RequestParam("token") String token) {
             userService.isTokenValid(token);
     
@@ -108,6 +116,8 @@ public class UserController {
     }
 
     @PutMapping("/updatePassword")
+    @ApiOperation(value = "Updates a user")
+    @ApiRoleAccessNotes("ROLE_ADMIN")
     public UserResponse updatePassword(@RequestBody PasswordAndToken passwordAndToken){
         return userService.updatePassword(passwordAndToken.getNewPassword(), passwordAndToken.getToken());
     }
