@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -47,6 +49,7 @@ public class QuestionController {
     private AlternativeRepository alternativeRepository;
 
     @GetMapping
+    @Cacheable(value = "question", key = "#root.methodName")
     @ApiOperation(value = "Returns a list of questions")
     public List<QuestionResponse> getAllQuestions(){
         List<Question> questions = questionRepository.findAll();
@@ -54,6 +57,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{questionId}")
+    @CacheEvict(value = "question", allEntries = true)
     @ApiOperation(value = "Deletes a question by id")
     @ApiRoleAccessNotes("ROLE_ADMIN")
     public ResponseEntity<Void> deleteQuestion(@PathVariable int questionId){
@@ -61,10 +65,15 @@ public class QuestionController {
         questionRepository.deleteImages(questionId);
         questionRepository.deleteById(questionId);
 
+        try {
+        } catch (Exception e) {
+        }
+
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{questionId}")
+    @CacheEvict(value = "question", allEntries = true)
     @ApiOperation(value = "Updates a question")
     @ApiRoleAccessNotes("ROLE_ADMIN")
     public ResponseEntity<QuestionResponse> updateQuestion(@PathVariable int questionId, @RequestBody QuestionInput questionInput){
@@ -72,6 +81,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{exam}")
+    @Cacheable(value = "question", key = "#exam")
     @ApiOperation(value = "Returns a set of questions, filtering by the exam")
     public Set<QuestionResponse> getQuestionsByExam(@PathVariable String exam){
         Set<Question> questions = questionRepository.findByExam(exam);
@@ -80,6 +90,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{exam}/{year}")
+    @Cacheable(value = "question", key = "{#exam, #year}")
     @ApiOperation(value = "Returns a set of questions, filtering by the exam and the year")
     public Set<QuestionResponse> getQuestionsByExamAndYear(@PathVariable String exam, @PathVariable int year){
         Set<Question> questions = questionRepository.findByExamAndYear(exam, year);
@@ -88,6 +99,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{exam}/{year}/{subject}")
+    @Cacheable(value = "question", key = "{#exam, #year, #subject}")
     @ApiOperation(value = "Returns a set of questions, filtering by the exam, the year and the subject")
     public Set<QuestionResponse> getQuestionsByExamAndYearAndSubject(@PathVariable String exam, @PathVariable int year, @PathVariable String subject){
         Set<Question> questions = questionRepository.findByExamAndYearAndSubject(exam, year, subject);
@@ -96,6 +108,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{exam}/{year}/{subject}/{slug}")
+    @Cacheable(value = "uniqueQuestion", key = "#slug")
     @ApiOperation(value = "Returns a unique question, filtering by the slug")
     public QuestionResponse getQuestionsBySlug(@PathVariable String exam, 
     @PathVariable int year, @PathVariable String subject, @PathVariable String slug) throws Exception{
@@ -109,6 +122,7 @@ public class QuestionController {
     }
 
     @PostMapping
+    @CacheEvict(cacheNames = "question", allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Create a question")
     @ApiRoleAccessNotes("ROLE_ADMIN")
@@ -117,6 +131,7 @@ public class QuestionController {
     }
 
     @PostMapping("/answer")
+    @Cacheable(value = "question", key = "{#questionId, #alternativeId}")
     @ApiOperation(value = "Checks the answer of a logged user")
     @ApiRoleAccessNotes({"ROLE_USER", "ROLE_ADMIN"})
     public boolean checkAnswer(@RequestParam(name = "questionId") String questionId, @RequestParam(name = "alternativeId") int alternativeId) throws Exception{

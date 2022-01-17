@@ -1,5 +1,6 @@
 package br.com.questionsbase.api.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_EMPTY)
-public class QuestionResponse {
+public class QuestionResponse implements Serializable{
     private int id;
 
     private String exam;
