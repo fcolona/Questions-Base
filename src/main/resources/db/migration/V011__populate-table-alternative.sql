@@ -1,0 +1,27 @@
+INSERT INTO 
+    alternative
+VALUES 
+    (1, 1,"1", false),
+    (2, 1,"2 e 3", false),
+    (3, 1,"3", true),
+    (4, 1,"3 e 4", false),
+    (5, 1,"4", false),
+    (6, 2,"5 ml", false),
+    (7, 2,"10 ml", false),
+    (8, 2,"15 ml", true),
+    (9, 2,"20 ml", false),
+    (10, 2,"25 ml", false),
+    (11, 3,"um navio que parte do Japão em direção à costa oeste dos Estados Unidos, ao cruzar a linha internacional de datas, terá que notificar em seus registros que pulou um dia no calendário civil oficial", false),
+    (12, 3,"cruzeiros turísticos podem antecipar a comemoração do Réveillon, ao cruzarem a linha internacional de datas na noite do dia 30 de dezembro, desde que este deslocamento se dê no sentido oeste.", true),
+    (13, 3,"um navio que parte da costa oeste dos Estados Unidos em direção ao Japão, ao cruzar a linha internacional de datas, terá que notificar em seus registros que atrasou um dia no calendário civil oficial.", false),
+    (14, 3,"cruzeiros turísticos podem antecipar a comemoração do Réveillon, ao cruzarem a linha internacional de datas na noite do dia 30 de dezembro, desde que esse deslocamento se dê no sentido leste.", false),
+    (15, 4,"acredita que todas as pessoas estarão extintas em menos de dez anos.", true),
+    (16, 4,"duvida de que todas as pessoas estarão extintas em menos de dez anos.", false),
+    (17, 4,"acredita que todas as pessoas estarão extintas em dez anos.", false),
+    (18, 4,"duvida daqueles que dizem que todas as pessoas irão se extinguir.", false),
+    (19, 4,"acredita que todas as pessoas estarão extintas em mais de dez anos.", false),
+    (20, 5,"120.", false),
+    (21, 5,"121.", false),
+    (22, 5,"122.", true),
+    (23, 5,"123", false),
+    (24, 5,"124.", false);
