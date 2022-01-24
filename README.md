@@ -3,9 +3,22 @@
 ## Project Description
   This project is an API whose main goals are: store exam's questions, retrieve it and check the user answer, as well as dealing with authentication.
 
+## Main Features
+  - Database Migrations
+  - Basic Auth
+  - OAuth
+  - Validation
+  - Error Handling
+  - "Forgot My Password"
+  - Entity Graphs
+  - JPA Projections
+  - Cache
+  - Dealing with Images
+  - Swagger Documentation
+
 ## Main Technologies:
   - Java
-  - Spring Boot (Spring Security, Spring Data Jpa, OAuth, Java Mail Sender...)
+  - Spring Boot (Spring Security, Spring Data JPA, OAuth, Java Mail Sender...)
   - Mysql
   - Redis
   - Swagger
